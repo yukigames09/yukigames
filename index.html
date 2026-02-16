@@ -476,7 +476,7 @@
         <!-- Search -->
         <div class="search-box">
             <span style="font-size: 20px;">🔍</span>
-            <input type="text" id="searchInput" placeholder="Search games by name, publisher, or language...">
+            <input type="text" id="searchInput" placeholder="Search games...">
         </div>
 
         <!-- Detail Page -->
@@ -585,24 +585,59 @@
         // 🎮 THÊM GAME MỚI TẠI ĐÂY
         // ============================================
         // Thêm tối đa 3 ảnh cho mỗi game
+        // sizeUnit: "MB" hoặc "GB" (tùy chọn cho từng game)
         let games = [
-    {
-        id: 1,
-        name: "He Maid her Fall",
-        publisher: "Hangover Cat",
-        version: "0.7.6",
-        size: 4,
-        language: "English",
-        description: "The game may experience lag, so please consider this before downloading if your phone has low specifications. Have fun playing!",
-        images: [
-            "https://files.catbox.moe/12lg71.gif",
-            "https://files.catbox.moe/n016u1.jpg",
-            "https://files.catbox.moe/tdx0n8.jpg"
-        ],
-        downloadLink: "https://vexfile.com/download/0qGyth1mlF"
-    }
-];
-            
+            {
+                id: 1,
+                name: "He Maid her Fall",
+                publisher: "Hangover Cat",
+                version: "0.7.6",
+                size: 4,
+                sizeUnit: "GB",  // ⬅️ Đơn vị: "MB" hoặc "GB"
+                language: "English",
+                description: "The game may experience lag, so please consider this before downloading if your phone has low specifications. Have fun playing!",
+                images: [
+                    "https://files.catbox.moe/12lg71.gif",
+                    "https://files.catbox.moe/n016u1.jpg",
+                    "https://files.catbox.moe/tdx0n8.jpg"
+                ],
+                downloadLink: "https://vexfile.com/download/0qGyth1mlF"
+            }
+            // ⬇️ THÊM GAME MỚI Ở ĐÂY (nhớ thêm dấu phẩy ở trên) ⬇️
+            // VÍ DỤ GAME DÙNG MB:
+            // {
+            //     id: 2,
+            //     name: "Small Game",
+            //     publisher: "Publisher",
+            //     version: "1.0.0",
+            //     size: 500,
+            //     sizeUnit: "MB",  // ⬅️ Game này dùng MB
+            //     language: "English",
+            //     description: "Game description...",
+            //     images: [
+            //         "https://link-anh-1.jpg",
+            //         "https://link-anh-2.jpg",
+            //         "https://link-anh-3.jpg"
+            //     ],
+            //     downloadLink: "https://download-link.apk"
+            // }
+            // VÍ DỤ GAME DÙNG GB:
+            // {
+            //     id: 3,
+            //     name: "Big Game",
+            //     publisher: "Publisher",
+            //     version: "2.0.0",
+            //     size: 3.5,
+            //     sizeUnit: "GB",  // ⬅️ Game này dùng GB
+            //     language: "English",
+            //     description: "Game description...",
+            //     images: [
+            //         "https://link-anh-1.jpg",
+            //         "https://link-anh-2.jpg",
+            //         "https://link-anh-3.jpg"
+            //     ],
+            //     downloadLink: "https://download-link.apk"
+            // }
         ];
 
         // Slider state
@@ -714,7 +749,7 @@
                         <h3>${game.name}</h3>
                         <div class="game-meta">
                             <span class="badge">⭐ ${game.version}</span>
-                            <span class="badge">📦 ${game.size} GB</span>
+                            <span class="badge">📦 ${game.size} ${game.sizeUnit || 'MB'}</span>
                         </div>
                         <div class="game-info">
                             <strong>Publisher:</strong> ${game.publisher}
@@ -755,7 +790,7 @@
             // Update content
             document.getElementById('detailName').textContent = game.name;
             document.getElementById('detailPublisher').textContent = 'by ' + game.publisher;
-            document.getElementById('detailSize').textContent = game.size + ' GB';
+            document.getElementById('detailSize').textContent = game.size + ' ' + (game.sizeUnit || 'MB');
             document.getElementById('detailVersion').textContent = game.version;
             document.getElementById('detailLanguage').textContent = game.language;
             document.getElementById('detailPublisher2').textContent = game.publisher;
@@ -789,4 +824,4 @@
         displayGames();
     </script>
 </body>
-    </html>
+</html>
