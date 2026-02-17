@@ -34,42 +34,7 @@
             -ms-user-select: none;
         }
 
-        /* =============================================== */
-        /* 🎵 MUSIC TOGGLE BUTTON */
-        /* =============================================== */
-        .music-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            cursor: pointer;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
-            transition: all 0.3s ease;
-        }
 
-        .music-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.7);
-        }
-
-        .music-btn.playing {
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5); }
-            50% { box-shadow: 0 4px 30px rgba(102, 126, 234, 0.9); }
-        }
-        /* =============================================== */
 
         /* =============================================== */
         /* 🎉 WELCOME POPUP STYLES */
@@ -590,9 +555,6 @@
 </head>
 <body>
 
-    <!-- 🎵 MUSIC TOGGLE BUTTON -->
-    <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Toggle Music">🎵</button>
-
     <!-- 🎉 WELCOME POPUP -->
     <div class="popup-overlay" id="welcomePopup">
         <div class="welcome-popup">
@@ -736,57 +698,7 @@
             if (e.target === this) closeReportModal();
         });
 
-        // ===============================================
-        // 🎵 BACKGROUND MUSIC - TỰ THÊM NHẠC TẠI ĐÂY
-        // ===============================================
-        const playlist = [
-            "https://files.catbox.moe/51er5j.mp3",   // ⬅️ Nhạc 1
-            "https://files.catbox.moe/whojud.mp3",   // ⬅️ Nhạc 2
-            "https://link-nhac-3.mp3"                // ⬅️ Nhạc 3
-        ];
 
-        let currentTrack = 0;
-        let isPlaying = false;
-        const bgMusic = new Audio();
-        bgMusic.volume = 0.10;
-        bgMusic.src = playlist[currentTrack];
-
-        bgMusic.addEventListener('ended', function() {
-            currentTrack = (currentTrack + 1) % playlist.length;
-            bgMusic.src = playlist[currentTrack];
-            bgMusic.play();
-        });
-
-        function startMusic() {
-            bgMusic.play().catch(() => {});
-            isPlaying = true;
-            updateMusicBtn();
-        }
-
-        function toggleMusic() {
-            if (isPlaying) {
-                bgMusic.pause();
-                isPlaying = false;
-            } else {
-                bgMusic.play().catch(() => {});
-                isPlaying = true;
-            }
-            updateMusicBtn();
-        }
-
-        function updateMusicBtn() {
-            const btn = document.getElementById('musicBtn');
-            if (isPlaying) {
-                btn.textContent = '🔊';
-                btn.classList.add('playing');
-                btn.title = 'Pause Music';
-            } else {
-                btn.textContent = '🔇';
-                btn.classList.remove('playing');
-                btn.title = 'Play Music';
-            }
-        }
-        // ===============================================
 
         // ===============================================
         // 🎉 WELCOME POPUP
@@ -799,7 +711,6 @@
 
         function closePopup() {
             document.getElementById('welcomePopup').classList.remove('active');
-            startMusic();
         }
 
         document.getElementById('welcomePopup').addEventListener('click', function(e) {
@@ -996,6 +907,4 @@
         displayGames();
     </script>
 </body>
-</html>
-
-
+    </html>
