@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yuki games - H game Downloads</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
 
@@ -33,6 +34,115 @@
             -moz-user-select: none;
             -ms-user-select: none;
         }
+
+        /* =============================================== */
+        /* 🎉 WELCOME POPUP STYLES - THÊM MỚI */
+        /* =============================================== */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .welcome-popup {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+            border-radius: 25px;
+            padding: 50px 40px;
+            max-width: 550px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 70px rgba(102, 126, 234, 0.4);
+            transform: scale(0.8) translateY(-20px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .popup-overlay.active .welcome-popup {
+            transform: scale(1) translateY(0);
+        }
+
+
+
+        .welcome-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .welcome-popup h2 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-popup p {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.1em;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive for popup */
+        @media (max-width: 600px) {
+            .welcome-popup {
+                padding: 35px 25px;
+            }
+
+            .welcome-popup h2 {
+                font-size: 2em;
+            }
+
+            .welcome-icon {
+                font-size: 60px;
+            }
+        }
+        /* =============================================== */
+        /* KẾT THÚC POPUP STYLES */
+        /* =============================================== */
 
         .container {
             max-width: 1400px;
@@ -391,6 +501,13 @@
             font-size: 1.05em;
         }
 
+        .btn-download-wrapper {
+            position: relative;
+            margin-top: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
         .btn-download {
             display: block;
             background: linear-gradient(135deg, #00d2ff, #3a47d5);
@@ -401,14 +518,185 @@
             border-radius: 15px;
             font-size: 1.3em;
             font-weight: 700;
-            margin-top: 30px;
             transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            width: 100%;
         }
 
-        .btn-download:hover {
+        .btn-download:hover:not(:disabled) {
             transform: scale(1.05);
             box-shadow: 0 10px 40px rgba(0, 210, 255, 0.4);
         }
+
+        .btn-download:disabled {
+            background: linear-gradient(135deg, #2a2a4a, #3a3a6a);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .download-progress {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 5px;
+            width: 0%;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 0 0 15px 15px;
+            transition: width 1s linear;
+        }
+
+        /* =============================================== */
+        /* 🐛 BÁO LỖI LINK STYLES */
+        /* =============================================== */
+        .btn-report {
+            display: block;
+            width: 100%;
+            margin-top: 12px;
+            background: rgba(255, 80, 80, 0.15);
+            border: 1px solid rgba(255, 80, 80, 0.4);
+            color: rgba(255, 120, 120, 0.9);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-report:hover {
+            background: rgba(255, 80, 80, 0.25);
+            border-color: rgba(255, 80, 80, 0.7);
+            color: #fff;
+        }
+
+        .report-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .report-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .report-modal {
+            background: #1a1a35;
+            border: 1px solid rgba(255, 80, 80, 0.3);
+            border-radius: 20px;
+            padding: 35px;
+            max-width: 450px;
+            width: 90%;
+            transform: scale(0.85);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .report-overlay.active .report-modal {
+            transform: scale(1);
+        }
+
+        .report-modal h3 {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ff6b6b;
+        }
+
+        .report-modal p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .report-modal input,
+        .report-modal textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: white;
+            font-size: 0.95em;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            margin-bottom: 12px;
+            transition: border 0.3s;
+        }
+
+        .report-modal input:focus,
+        .report-modal textarea:focus {
+            border-color: rgba(255, 80, 80, 0.5);
+        }
+
+        .report-modal textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .report-modal input::placeholder,
+        .report-modal textarea::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+
+        .report-modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .btn-cancel-report {
+            flex: 1;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel-report:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .btn-send-report {
+            flex: 2;
+            background: linear-gradient(135deg, #ff6b6b, #c0392b);
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-send-report:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 80, 80, 0.4);
+        }
+
+        .btn-send-report:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        /* =============================================== */
+        /* KẾT THÚC BÁO LỖI STYLES */
+        /* =============================================== */
 
         /* Footer */
         footer {
@@ -467,6 +755,23 @@
     </style>
 </head>
 <body>
+    <!-- =============================================== -->
+    <!-- 🎉 WELCOME POPUP - THÊM MỚI -->
+    <!-- =============================================== -->
+    <div class="popup-overlay" id="welcomePopup">
+        <div class="welcome-popup">
+            <div class="welcome-icon">🐇</div>
+            
+            <h2>Welcome to Yuki Games!</h2>
+            <p>Happy New Year! Don't forget to subscribe and like to support Yuki, and have fun playing the game! </p>
+            
+            <button class="action-btn" onclick="closePopup()">Start Exploring</button>
+        </div>
+    </div>
+    <!-- =============================================== -->
+    <!-- KẾT THÚC WELCOME POPUP -->
+    <!-- =============================================== -->
+
     <div class="container">
         <header>
             <h1>🐇 Yuki games</h1>
@@ -521,10 +826,32 @@
                         <p id="detailDescription"></p>
                     </div>
 
-                    <a href="#" id="detailDownloadBtn" class="btn-download">⬇️ Download APK Now</a>
+                    <div class="btn-download-wrapper">
+                        <button id="detailDownloadBtn" class="btn-download" onclick="startDownload()">⬇️ Download APK Now</button>
+                        <div class="download-progress" id="downloadProgress"></div>
+                    </div>
+
+                    <button class="btn-report" onclick="openReportModal()">🐛 Report Broken Link</button>
                 </div>
             </div>
         </div>
+
+        <!-- =============================================== -->
+        <!-- 🐛 REPORT MODAL -->
+        <!-- =============================================== -->
+        <div class="report-overlay" id="reportOverlay">
+            <div class="report-modal">
+                <h3>🐛 Report Broken Link</h3>
+                <p id="reportGameName"></p>
+                <input type="text" id="reportName" placeholder="Your name (required)" />
+                <textarea id="reportMessage" placeholder="Describe the issue... (e.g. Link is dead, cannot download...)"></textarea>
+                <div class="report-modal-btns">
+                    <button class="btn-cancel-report" onclick="closeReportModal()">Cancel</button>
+                    <button class="btn-send-report" id="sendReportBtn" onclick="sendReport()">📤 Send Report</button>
+                </div>
+            </div>
+        </div>
+        <!-- =============================================== -->
 
         <!-- Game List -->
         <div id="gameList">
@@ -542,6 +869,133 @@
     </div>
 
     <script>
+        // ===============================================
+        // 🐛 BÁO LỖI LINK - EMAILJS
+        // ===============================================
+        emailjs.init('g-Oatpsf_cwSSCAEU');
+
+        function openReportModal() {
+            const gameName = document.getElementById('detailName').textContent;
+            document.getElementById('reportGameName').textContent = 'Game: ' + gameName;
+            document.getElementById('reportName').value = '';
+            document.getElementById('reportMessage').value = '';
+            document.getElementById('sendReportBtn').disabled = false;
+            document.getElementById('sendReportBtn').textContent = '📤 Send Report';
+            document.getElementById('reportOverlay').classList.add('active');
+        }
+
+        function closeReportModal() {
+            document.getElementById('reportOverlay').classList.remove('active');
+        }
+
+        function sendReport() {
+            const gameName = document.getElementById('detailName').textContent;
+            const name = document.getElementById('reportName').value.trim();
+            const message = document.getElementById('reportMessage').value.trim();
+            const btn = document.getElementById('sendReportBtn');
+
+            if (!name) {
+                document.getElementById('reportName').focus();
+                document.getElementById('reportName').style.borderColor = 'rgba(255, 80, 80, 0.8)';
+                return;
+            }
+
+            if (!message) {
+                document.getElementById('reportMessage').focus();
+                document.getElementById('reportMessage').style.borderColor = 'rgba(255, 80, 80, 0.8)';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Sending...';
+
+            emailjs.send('service_2ifs8jd', 'template_6ke1m5f', {
+                name: name,
+                email: 'no-reply@yukigames.com',
+                title: gameName,
+                message: message,
+                game_name: gameName
+            }).then(function() {
+                btn.textContent = '✅ Sent!';
+                setTimeout(closeReportModal, 1500);
+            }).catch(function() {
+                btn.disabled = false;
+                btn.textContent = '❌ Failed, try again!';
+                setTimeout(() => { btn.textContent = '📤 Send Report'; }, 2000);
+            });
+        }
+
+        document.getElementById('reportOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeReportModal();
+        });
+        // ===============================================
+        // KẾT THÚC BÁO LỖI
+        // ===============================================
+
+        // ===============================================
+        // 🎵 BACKGROUND MUSIC - TỰ THÊM NHẠC TẠI ĐÂY
+        // ===============================================
+        const playlist = [
+            "https://files.catbox.moe/51er5j.mp3",   // ⬅️ Thay link nhạc 1 vào đây
+            "https://files.catbox.moe/whojud.mp3",   // ⬅️ Thay link nhạc 2 vào đây
+            "https://link-nhac-3.mp3"    // ⬅️ Thay link nhạc 3 vào đây
+        ];
+
+        let currentTrack = 0;
+        const bgMusic = new Audio();
+        bgMusic.volume = 0.15;
+        bgMusic.src = playlist[currentTrack];
+
+        bgMusic.addEventListener('ended', function() {
+            currentTrack = (currentTrack + 1) % playlist.length;
+            bgMusic.src = playlist[currentTrack];
+            bgMusic.play();
+        });
+
+        function startMusic() {
+            bgMusic.play().catch(() => {});
+        }
+        // ===============================================
+        // KẾT THÚC MUSIC
+        // ===============================================
+
+        // ===============================================
+        // 🎉 WELCOME POPUP JAVASCRIPT - THÊM MỚI
+        // ===============================================
+        window.addEventListener('load', function() {
+            const dontShow = localStorage.getItem('dontShowYukiWelcome');
+            
+            if (!dontShow) {
+                setTimeout(function() {
+                    document.getElementById('welcomePopup').classList.add('active');
+                }, 800);
+            }
+        });
+
+        function closePopup() {
+            const popup = document.getElementById('welcomePopup');
+            popup.classList.remove('active');
+            startMusic();
+        }
+
+        document.getElementById('welcomePopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const popup = document.getElementById('welcomePopup');
+                if (popup.classList.contains('active')) {
+                    closePopup();
+                }
+            }
+        });
+        // ===============================================
+        // KẾT THÚC POPUP JAVASCRIPT
+        // ===============================================
+
         // Prevent right click
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
@@ -795,12 +1249,50 @@
             document.getElementById('detailLanguage').textContent = game.language;
             document.getElementById('detailPublisher2').textContent = game.publisher;
             document.getElementById('detailDescription').textContent = game.description;
-            document.getElementById('detailDownloadBtn').href = game.downloadLink;
+            document.getElementById('detailDownloadBtn').dataset.link = game.downloadLink;
+            document.getElementById('detailDownloadBtn').disabled = false;
+            document.getElementById('detailDownloadBtn').textContent = '⬇️ Download APK Now';
+            document.getElementById('downloadProgress').style.width = '0%';
 
             document.getElementById('gameList').style.display = 'none';
             document.getElementById('detailPage').classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // ===============================================
+        // ⬇️ DOWNLOAD COUNTDOWN - 10 GIÂY
+        // ===============================================
+        function startDownload() {
+            const btn = document.getElementById('detailDownloadBtn');
+            const progress = document.getElementById('downloadProgress');
+            const link = btn.dataset.link;
+
+            if (btn.disabled) return;
+
+            btn.disabled = true;
+            let seconds = 10;
+            btn.textContent = `⏳ Please wait... ${seconds}s`;
+
+            // Bắt đầu thanh progress
+            setTimeout(() => { progress.style.width = '100%'; }, 50);
+
+            const interval = setInterval(() => {
+                seconds--;
+                if (seconds > 0) {
+                    btn.textContent = `⏳ Please wait... ${seconds}s`;
+                } else {
+                    clearInterval(interval);
+                    btn.disabled = false;
+                    btn.textContent = '✅ Click here to Download!';
+                    progress.style.width = '0%';
+                    progress.style.transition = 'none';
+                    btn.onclick = () => { window.open(link, '_blank'); };
+                }
+            }, 1000);
+        }
+        // ===============================================
+        // KẾT THÚC DOWNLOAD COUNTDOWN
+        // ===============================================
 
         // Show game list
         function showGameList() {
