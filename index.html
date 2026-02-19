@@ -26,12 +26,215 @@
         }
 
         img {
-            pointer-events: none;
             user-select: none;
             -webkit-user-drag: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+        }
+
+        /* Allow clicks on slider images */
+        .slide img {
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        /* =============================================== */
+        /* 🖼️ IMAGE VIEWER FULLSCREEN */
+        /* =============================================== */
+        .image-viewer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            cursor: zoom-out;
+        }
+
+        .image-viewer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-viewer-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .image-viewer-img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
+            cursor: default;
+        }
+
+        .image-viewer-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .image-viewer-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .image-viewer-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .image-viewer-nav:hover {
+            background: rgba(102, 126, 234, 0.8);
+        }
+
+        .image-viewer-nav.prev { left: 20px; }
+        .image-viewer-nav.next { right: 20px; }
+
+        .image-viewer-counter {
+            color: white;
+            font-size: 1.1em;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        /* =============================================== */
+        /* ⏳ LOADING ANIMATION */
+        /* =============================================== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 35, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 15000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(102, 126, 234, 0.2);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* =============================================== */
+        /* 👁️ VIEW COUNT BADGE */
+        /* =============================================== */
+        .view-count-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            cursor: pointer;
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.7);
         }
 
 
@@ -229,7 +432,7 @@
 
         .slide { min-width: 100%; height: 100%; position: relative; }
 
-        .slide img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; pointer-events: auto; cursor: pointer; }
 
         .slider-nav {
             position: absolute;
@@ -380,6 +583,30 @@
 
         .description-box h3 { color: #667eea; font-size: 1.5em; margin-bottom: 15px; }
         .description-box p { color: rgba(255,255,255,0.8); line-height: 1.9; font-size: 1.05em; }
+
+        /* YouTube Embedded Video */
+        .youtube-container {
+            margin: 30px 0;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 70%; /* Taller video frame */
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            background: #000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
 
         .btn-download-wrapper {
             position: relative;
@@ -555,6 +782,26 @@
 </head>
 <body>
 
+    <!-- 🖼️ IMAGE VIEWER -->
+    <div class="image-viewer-overlay" id="imageViewer" onclick="closeImageViewer(event)">
+        <div class="image-viewer-content">
+            <button class="image-viewer-close" onclick="closeImageViewer(event)">✕</button>
+            <button class="image-viewer-nav prev" onclick="viewerPrevImage(event)">‹</button>
+            <button class="image-viewer-nav next" onclick="viewerNextImage(event)">›</button>
+            <img id="viewerImage" class="image-viewer-img" src="" alt="Full view">
+            <div class="image-viewer-counter" id="viewerCounter">1 / 3</div>
+        </div>
+    </div>
+
+    <!-- ⏳ LOADING OVERLAY -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <!-- ⬆️ SCROLL TO TOP -->
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">⬆️</button>
+
     <!-- 🎉 WELCOME POPUP -->
     <div class="popup-overlay" id="welcomePopup">
         <div class="welcome-popup">
@@ -601,6 +848,20 @@
                         <h3>📖 Description</h3>
                         <p id="detailDescription"></p>
                     </div>
+                    
+                    <!-- YouTube Trailer/Gameplay Embedded -->
+                    <div id="youtubeContainer" class="youtube-container" style="display: none;">
+                        <div class="video-wrapper">
+                            <iframe id="youtubeIframe" 
+                                    width="100%" 
+                                    height="100%" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+
                     <div class="btn-download-wrapper">
                         <button id="detailDownloadBtn" class="btn-download" onclick="startDownload()">⬇️ Download APK Now</button>
                         <div class="download-progress" id="downloadProgress"></div>
@@ -758,10 +1019,59 @@
                     "https://files.catbox.moe/n016u1.jpg",
                     "https://files.catbox.moe/tdx0n8.jpg"
                 ],
-                downloadLink: "https://vexfile.com/download/0qGyth1mlF"
+                downloadLink: "https://vexfile.com/download/0qGyth1mlF",
+                views: 0,  // ⬅️ View count (tự động tăng)
+                youtubeUrl: "https://youtu.be/_qHsGSsx9wE?si=jKHpP7LowzBMmjxn"  // ⬅️ Link YouTube trailer/gameplay (thay link của bạn vào đây, để trống "" nếu không có)
             }
             // ⬇️ THÊM GAME MỚI Ở ĐÂY (nhớ thêm dấu phẩy ở trên) ⬇️
+            // VÍ DỤ:
+            // {
+            //     id: 2,
+            //     name: "Game Name",
+            //     publisher: "Publisher",
+            //     version: "1.0.0",
+            //     size: 500,
+            //     sizeUnit: "MB",
+            //     language: "English",
+            //     description: "Game description...",
+            //     images: ["url1", "url2", "url3"],
+            //     downloadLink: "https://download-link.apk",
+            //     views: 0,
+            //     youtubeUrl: "https://www.youtube.com/watch?v=VIDEO_ID"  // ⬅️ Thêm link YouTube
+            // }
         ];
+
+        // ===============================================
+        // 👁️ VIEW COUNT SYSTEM
+        // ===============================================
+        function loadViewCounts() {
+            const saved = localStorage.getItem('yukiGameViews');
+            if (saved) {
+                const counts = JSON.parse(saved);
+                games.forEach(game => {
+                    game.views = counts[game.id] || 0;
+                });
+            }
+        }
+
+        function saveViewCounts() {
+            const counts = {};
+            games.forEach(game => {
+                counts[game.id] = game.views;
+            });
+            localStorage.setItem('yukiGameViews', JSON.stringify(counts));
+        }
+
+        function incrementView(gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (game) {
+                game.views++;
+                saveViewCounts();
+            }
+        }
+
+        loadViewCounts();
+        // ===============================================
 
         let currentSlides = {};
         let detailCurrentSlide = 0;
@@ -813,7 +1123,7 @@
                 gameCard.innerHTML = `
                     <div class="slider-container">
                         <div class="slider" id="slider-${game.id}">
-                            ${game.images.map(img => `<div class="slide"><img src="${img}" alt="${game.name}"></div>`).join('')}
+                            ${game.images.map((img, idx) => `<div class="slide"><img src="${img}" alt="${game.name}" onclick="openImageViewerById(${game.id}, ${idx}); event.stopPropagation();"></div>`).join('')}
                         </div>
                         <button class="slider-nav prev" onclick="changeSlide(${game.id}, -1); event.stopPropagation();">‹</button>
                         <button class="slider-nav next" onclick="changeSlide(${game.id}, 1); event.stopPropagation();">›</button>
@@ -826,6 +1136,7 @@
                         <div class="game-meta">
                             <span class="badge">⭐ ${game.version}</span>
                             <span class="badge">📦 ${game.size} ${game.sizeUnit || 'MB'}</span>
+                            <span class="view-count-badge">👁️ ${game.views} views</span>
                         </div>
                         <div class="game-info"><strong>Publisher:</strong> ${game.publisher}</div>
                         <div class="game-info"><strong>Language:</strong> ${game.language}</div>
@@ -838,27 +1149,66 @@
         }
 
         function showGameDetail(gameId) {
-            const game = games.find(g => g.id === gameId);
-            if (!game) return;
-            window.currentDetailGameId = gameId;
-            detailCurrentSlide = 0;
-            document.getElementById('detailSlider').innerHTML = game.images.map(img => `<div class="slide"><img src="${img}" alt="${game.name}"></div>`).join('');
-            document.getElementById('detailDots').innerHTML = game.images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join('');
-            document.getElementById('detailName').textContent = game.name;
-            document.getElementById('detailPublisher').textContent = 'by ' + game.publisher;
-            document.getElementById('detailSize').textContent = game.size + ' ' + (game.sizeUnit || 'MB');
-            document.getElementById('detailVersion').textContent = game.version;
-            document.getElementById('detailLanguage').textContent = game.language;
-            document.getElementById('detailPublisher2').textContent = game.publisher;
-            document.getElementById('detailDescription').textContent = game.description;
-            document.getElementById('detailDownloadBtn').dataset.link = game.downloadLink;
-            document.getElementById('detailDownloadBtn').disabled = false;
-            document.getElementById('detailDownloadBtn').textContent = '⬇️ Download APK Now';
-            document.getElementById('detailDownloadBtn').onclick = startDownload;
-            document.getElementById('downloadProgress').style.width = '0%';
-            document.getElementById('gameList').style.display = 'none';
-            document.getElementById('detailPage').classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Show loading
+            const loading = document.getElementById('loadingOverlay');
+            loading.classList.add('active');
+
+            setTimeout(() => {
+                const game = games.find(g => g.id === gameId);
+                if (!game) return;
+
+                // Increment view count
+                incrementView(gameId);
+
+                window.currentDetailGameId = gameId;
+                detailCurrentSlide = 0;
+                document.getElementById('detailSlider').innerHTML = game.images.map((img, idx) => `<div class="slide"><img src="${img}" alt="${game.name}" onclick="openImageViewerById(${gameId}, ${idx});"></div>`).join('');
+                document.getElementById('detailDots').innerHTML = game.images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join('');
+                document.getElementById('detailName').textContent = game.name;
+                document.getElementById('detailPublisher').textContent = 'by ' + game.publisher;
+                document.getElementById('detailSize').textContent = game.size + ' ' + (game.sizeUnit || 'MB');
+                document.getElementById('detailVersion').textContent = game.version;
+                document.getElementById('detailLanguage').textContent = game.language;
+                document.getElementById('detailPublisher2').textContent = game.publisher;
+                document.getElementById('detailDescription').textContent = game.description;
+                
+                // YouTube embedded video
+                const youtubeContainer = document.getElementById('youtubeContainer');
+                const youtubeIframe = document.getElementById('youtubeIframe');
+                if (game.youtubeUrl && game.youtubeUrl.trim() !== '') {
+                    // Extract video ID from URL
+                    let videoId = '';
+                    if (game.youtubeUrl.includes('youtube.com/watch?v=')) {
+                        videoId = game.youtubeUrl.split('v=')[1].split('&')[0];
+                    } else if (game.youtubeUrl.includes('youtu.be/')) {
+                        videoId = game.youtubeUrl.split('youtu.be/')[1].split('?')[0];
+                    } else if (game.youtubeUrl.length === 11) {
+                        // Direct video ID
+                        videoId = game.youtubeUrl;
+                    }
+                    
+                    if (videoId) {
+                        youtubeIframe.src = `https://www.youtube.com/embed/${videoId}`;
+                        youtubeContainer.style.display = 'block';
+                    } else {
+                        youtubeContainer.style.display = 'none';
+                    }
+                } else {
+                    youtubeContainer.style.display = 'none';
+                }
+
+                document.getElementById('detailDownloadBtn').dataset.link = game.downloadLink;
+                document.getElementById('detailDownloadBtn').disabled = false;
+                document.getElementById('detailDownloadBtn').textContent = '⬇️ Download APK Now';
+                document.getElementById('detailDownloadBtn').onclick = startDownload;
+                document.getElementById('downloadProgress').style.width = '0%';
+                document.getElementById('gameList').style.display = 'none';
+                document.getElementById('detailPage').classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // Hide loading
+                loading.classList.remove('active');
+            }, 500);
         }
 
         // ===============================================
@@ -870,7 +1220,7 @@
             const link = btn.dataset.link;
             if (btn.disabled) return;
             btn.disabled = true;
-            let seconds = 10;
+            let seconds = 15;
             btn.textContent = `⏳ Please wait... ${seconds}s`;
             setTimeout(() => { progress.style.width = '100%'; }, 50);
             const interval = setInterval(() => {
@@ -904,6 +1254,85 @@
             displayGames(filtered);
         });
 
+        // ===============================================
+        // 🖼️ IMAGE VIEWER FULLSCREEN
+        // ===============================================
+        let viewerImages = [];
+        let currentViewerIndex = 0;
+
+        function openImageViewerById(gameId, index) {
+            const game = games.find(g => g.id === gameId);
+            if (game) {
+                openImageViewer(game.images, index);
+            }
+        }
+
+        function openImageViewer(images, index) {
+            viewerImages = images;
+            currentViewerIndex = index;
+            updateViewerImage();
+            document.getElementById('imageViewer').classList.add('active');
+        }
+
+        function closeImageViewer(event) {
+            if (event) {
+                if (event.target === document.getElementById('imageViewer') || 
+                    event.target.classList.contains('image-viewer-close')) {
+                    document.getElementById('imageViewer').classList.remove('active');
+                    event.stopPropagation();
+                }
+            } else {
+                document.getElementById('imageViewer').classList.remove('active');
+            }
+        }
+
+        function viewerPrevImage(event) {
+            event.stopPropagation();
+            currentViewerIndex = (currentViewerIndex - 1 + viewerImages.length) % viewerImages.length;
+            updateViewerImage();
+        }
+
+        function viewerNextImage(event) {
+            event.stopPropagation();
+            currentViewerIndex = (currentViewerIndex + 1) % viewerImages.length;
+            updateViewerImage();
+        }
+
+        function updateViewerImage() {
+            document.getElementById('viewerImage').src = viewerImages[currentViewerIndex];
+            document.getElementById('viewerCounter').textContent = `${currentViewerIndex + 1} / ${viewerImages.length}`;
+        }
+
+        // Close viewer with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageViewer();
+            } else if (e.key === 'ArrowLeft') {
+                viewerPrevImage({ stopPropagation: () => {} });
+            } else if (e.key === 'ArrowRight') {
+                viewerNextImage({ stopPropagation: () => {} });
+            }
+        });
+
+        // ===============================================
+        // ⬆️ SCROLL TO TOP
+        // ===============================================
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.addEventListener('scroll', function() {
+            const btn = document.getElementById('scrollToTop');
+            if (window.scrollY > 300) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        });
+
+        // ===============================================
+        // INITIALIZE
+        // ===============================================
         displayGames();
     </script>
 </body>
