@@ -142,7 +142,7 @@
         }
 
         /* =============================================== */
-        /* ⏳ LOADING ANIMATION */
+        /* ⏳ LOADING ANIMATION - DOTS JUMPING */
         /* =============================================== */
         .loading-overlay {
             position: fixed;
@@ -150,7 +150,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 15, 35, 0.95);
+            background: rgba(15, 15, 35, 0.98);
+            backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -166,43 +167,49 @@
             visibility: visible;
         }
 
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(102, 126, 234, 0.2);
-            border-top-color: #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .loading-dots {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+            animation: dotJump 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dotJump {
+            0%, 80%, 100% {
+                transform: translateY(0);
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+            }
+            40% {
+                transform: translateY(-30px);
+                box-shadow: 0 10px 30px rgba(102, 126, 234, 0.8);
+            }
         }
 
         .loading-text {
-            margin-top: 20px;
             font-size: 1.2em;
             font-weight: 600;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* =============================================== */
-        /* 👁️ VIEW COUNT BADGE */
-        /* =============================================== */
-        .view-count-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(255, 215, 0, 0.15);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #ffd700;
+            color: white;
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.8);
         }
 
         .scroll-to-top {
@@ -795,7 +802,11 @@
 
     <!-- ⏳ LOADING OVERLAY -->
     <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
+        <div class="loading-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
         <div class="loading-text">Loading...</div>
     </div>
 
@@ -1005,6 +1016,23 @@
         // 🎮 THÊM GAME MỚI TẠI ĐÂY
         // ============================================
         let games = [
+             {
+        id: 2,
+        name: "Rec",
+        Developer: "moondev",
+        version: "0.4.4.1",
+        size: 234.35,
+        sizeUnit: "MB",
+        language: "English",
+        description: "Have fun playing the game ❤️ ",
+        images: [
+            "https://files.catbox.moe/mbqywh.png",
+            "https://files.catbox.moe/9n1utq.png",
+            "https://files.catbox.moe/wgz4yc.png"
+        ],
+        downloadLink: "https://vexfile.com/download/usJzItu5QL",
+        youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    }
             {
                 id: 1,
                 name: "He Maid her Fall",
@@ -1020,8 +1048,7 @@
                     "https://files.catbox.moe/tdx0n8.jpg"
                 ],
                 downloadLink: "https://vexfile.com/download/0qGyth1mlF",
-                views: 0,  // ⬅️ View count (tự động tăng)
-                youtubeUrl: "https://youtu.be/_qHsGSsx9wE?si=jKHpP7LowzBMmjxn"  // ⬅️ Link YouTube trailer/gameplay (thay link của bạn vào đây, để trống "" nếu không có)
+                youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"  // ⬅️ Link YouTube trailer/gameplay (thay link của bạn vào đây, để trống "" nếu không có)
             }
             // ⬇️ THÊM GAME MỚI Ở ĐÂY (nhớ thêm dấu phẩy ở trên) ⬇️
             // VÍ DỤ:
@@ -1041,36 +1068,6 @@
             // }
         ];
 
-        // ===============================================
-        // 👁️ VIEW COUNT SYSTEM
-        // ===============================================
-        function loadViewCounts() {
-            const saved = localStorage.getItem('yukiGameViews');
-            if (saved) {
-                const counts = JSON.parse(saved);
-                games.forEach(game => {
-                    game.views = counts[game.id] || 0;
-                });
-            }
-        }
-
-        function saveViewCounts() {
-            const counts = {};
-            games.forEach(game => {
-                counts[game.id] = game.views;
-            });
-            localStorage.setItem('yukiGameViews', JSON.stringify(counts));
-        }
-
-        function incrementView(gameId) {
-            const game = games.find(g => g.id === gameId);
-            if (game) {
-                game.views++;
-                saveViewCounts();
-            }
-        }
-
-        loadViewCounts();
         // ===============================================
 
         let currentSlides = {};
@@ -1120,6 +1117,7 @@
                 initSlider(game.id);
                 const gameCard = document.createElement('div');
                 gameCard.className = 'game-card';
+                gameCard.id = 'game-' + game.id;
                 gameCard.innerHTML = `
                     <div class="slider-container">
                         <div class="slider" id="slider-${game.id}">
@@ -1136,7 +1134,6 @@
                         <div class="game-meta">
                             <span class="badge">⭐ ${game.version}</span>
                             <span class="badge">📦 ${game.size} ${game.sizeUnit || 'MB'}</span>
-                            <span class="view-count-badge">👁️ ${game.views} views</span>
                         </div>
                         <div class="game-info"><strong>Publisher:</strong> ${game.publisher}</div>
                         <div class="game-info"><strong>Language:</strong> ${game.language}</div>
@@ -1156,9 +1153,6 @@
             setTimeout(() => {
                 const game = games.find(g => g.id === gameId);
                 if (!game) return;
-
-                // Increment view count
-                incrementView(gameId);
 
                 window.currentDetailGameId = gameId;
                 detailCurrentSlide = 0;
@@ -1233,7 +1227,9 @@
                     btn.textContent = '✅ Click here to Download!';
                     progress.style.transition = 'none';
                     progress.style.width = '0%';
-                    btn.onclick = () => { window.open(link, '_blank'); };
+                    btn.onclick = () => { 
+                        window.open(link, '_blank'); 
+                    };
                 }
             }, 1000);
         }
@@ -1336,4 +1332,4 @@
         displayGames();
     </script>
 </body>
-    </html>
+                </html>
