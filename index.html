@@ -35,7 +35,76 @@
             -o-user-drag: none;
         }
 
-        /* Animated Background Blobs */
+        /* =============================================== */
+        /* LOADING SCREEN */
+        /* =============================================== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            border: 8px solid rgba(255, 255, 255, 0.2);
+            border-top: 8px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #fff, rgba(255, 255, 255, 0.6));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* =============================================== */
+        /* ANIMATED BACKGROUND BLOBS */
+        /* =============================================== */
         .bg-blob {
             position: fixed;
             border-radius: 50%;
@@ -371,313 +440,7 @@
 
         /* =============================================== */
         /* =============================================== */
-        /* DOWNLOAD KEY MODAL */
         /* =============================================== */
-        .key-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
-
-        .key-modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .key-modal {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 25px;
-            padding: 40px 50px;
-            max-width: 450px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            transform: scale(0.9);
-            transition: all 0.3s;
-        }
-
-        .key-modal-overlay.active .key-modal {
-            transform: scale(1);
-        }
-
-        .key-modal-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 35px;
-            height: 35px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 1.5em;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .key-modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
-        }
-
-        .key-modal-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .key-modal-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-        }
-
-        .key-modal-title {
-            font-size: 1.8em;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .key-modal-subtitle {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.95em;
-        }
-
-        .key-input-group {
-            margin-bottom: 25px;
-        }
-
-        .key-input {
-            width: 100%;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
-            color: #fff;
-            font-size: 1.1em;
-            font-weight: 600;
-            text-align: center;
-            letter-spacing: 2px;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .key-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-            letter-spacing: normal;
-        }
-
-        .key-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .key-error {
-            color: #ff6b6b;
-            font-size: 0.9em;
-            margin-top: 10px;
-            text-align: center;
-            font-weight: 600;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .key-error.show {
-            opacity: 1;
-        }
-
-        .key-submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 15px;
-            color: #fff;
-            font-size: 1.1em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .key-submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
-        }
-
-        .key-submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .key-hint {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.85em;
-        }
-
-        /* Dual Buttons Side by Side */
-        .dual-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .btn-verify-key {
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 15px;
-            color: #fff;
-            font-size: 1.05em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-verify-key:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
-        }
-
-        .btn-get-password {
-            padding: 15px;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            border: none;
-            border-radius: 15px;
-            color: #fff;
-            font-size: 1.05em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
-        }
-
-        .btn-get-password:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
-        }
-
-        /* Password Waiting */
-        .password-waiting-section {
-            margin-top: 25px;
-            padding: 25px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .waiting-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.2);
-            border-top: 5px solid #f093fb;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .waiting-text {
-            color: rgba(255, 255, 255, 0.95);
-            font-size: 1.1em;
-            font-weight: 600;
-        }
-
-        /* Password Display */
-        .password-display-box {
-            margin-top: 25px;
-            padding: 25px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
-            text-align: center;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .password-label {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1em;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .password-value-text {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 18px 25px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 1.6em;
-            font-weight: 700;
-            letter-spacing: 3px;
-            margin-bottom: 15px;
-            font-family: 'Courier New', monospace;
-            user-select: all;
-            word-break: break-all;
-        }
-
-        .btn-copy-pass {
-            padding: 12px 30px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 12px;
-            color: #fff;
-            font-weight: 600;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-copy-pass:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
-
-        .password-hint {
-            margin-top: 15px;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.95em;
-            font-weight: 500;
-        }
-
         /* =============================================== */
         /* DETAIL PAGE */
         /* =============================================== */
@@ -1086,6 +849,17 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading...</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgressBar"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Animated Background Blobs -->
     <div class="bg-blob blob-1"></div>
     <div class="bg-blob blob-2"></div>
@@ -1171,7 +945,7 @@
                     </div>
 
                     <div class="download-section">
-                        <button class="btn-download-big" id="downloadBtn" onclick="checkKeyBeforeDownload()">
+                        <button class="btn-download-big" id="downloadBtn" onclick="startDownload()">
                             ⬇️ Download APK Now
                         </button>
                         <div class="download-progress">
@@ -1189,73 +963,72 @@
         </footer>
     </div>
 
-    <!-- Download Key Modal -->
-    <div class="key-modal-overlay" id="keyModal">
-        <div class="key-modal">
-            <button class="key-modal-close" onclick="closeKeyModal()">×</button>
-            <div class="key-modal-header">
-                <div class="key-modal-icon">🔐</div>
-                <h2 class="key-modal-title">Enter password download</h2>
-                <p class="key-modal-subtitle">Please enter the password to unlock this game</p>
-            </div>
-            
-            <div class="key-input-group">
-                <input type="text" class="key-input" id="keyInput" placeholder="Enter your key here..." maxlength="30">
-                <div class="key-error" id="keyError">❌ Invalid key! Please try again.</div>
-            </div>
-            
-            <!-- 2 Buttons Side by Side -->
-            <div class="dual-buttons">
-                <button class="btn-verify-key" onclick="verifyDownloadKey()">✅ Verify Key</button>
-                <button class="btn-get-password" onclick="getPasswordAction()">🔑 Get Password</button>
-            </div>
-            
-            <!-- Password Waiting Section -->
-            <div class="password-waiting-section" id="passwordWaitingSection" style="display: none;">
-                <div class="waiting-spinner"></div>
-                <p class="waiting-text">⏳ Please wait <span id="passwordWaitCounter">5</span>s...</p>
-            </div>
-            
-            <!-- Password Display -->
-            <div class="password-display-box" id="passwordDisplayBox" style="display: none;">
-                <div class="password-label">🎮 Game Password:</div>
-                <div class="password-value-text" id="passwordValueText">password123</div>
-                <button class="btn-copy-pass" onclick="copyPasswordText()">📋 Copy Password</button>
-                <p class="password-hint">👆 Copy the password above and paste it into the field below</p>
-            </div>
-            
-            <div class="key-hint" id="keyHint">
-                💡 Hint: Click the "get password" button to get the code.
-            </div>
-        </div>
-    </div>
-
     <!-- Scroll to Top -->
     <div class="scroll-top" id="scrollTop" onclick="scrollToTop()">⬆</div>
 
     <script>
+        // ===============================================
+        // CUSTOM BACKGROUND IMAGE
+        // ===============================================
+        // Paste ảnh Catbox vào đây để đổi background!
+        // Để trống "" để dùng gradient mặc định
+        const customBackgroundImage = "https://files.catbox.moe/199p1y.jpg";  // ⬅️ PASTE LINK ẢNH VÀO ĐÂY
+        
+        // Áp dụng background
+        if (customBackgroundImage && customBackgroundImage !== "") {
+            document.body.style.background = `url('${customBackgroundImage}') center/cover fixed`;
+            document.body.style.backgroundAttachment = 'fixed';
+        }
+
+        // ===============================================
+        // LOADING SCREEN
+        // ===============================================
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const progressBar = document.getElementById('loadingProgressBar');
+            
+            // Simulate loading progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadingScreen.classList.add('hidden');
+                        // Remove from DOM after animation
+                        setTimeout(() => {
+                            loadingScreen.remove();
+                        }, 500);
+                    }, 300);
+                }
+            }, 200);
+        });
+
+        // ===============================================
+        // GAMES DATA
+        // ===============================================
         let games = [
-        {
-    id: 2,
-    name: "Joiplay",
-    publisher: "Joiplay Team",
-    version: "1.20.023",
-    size: 23.45,
-    sizeUnit: "MB",
-    language: "English",
-    description: "JoiPlay is an open-source emulator application for the Android operating system, allowing users to play PC games, especially those developed using RPG Maker, Ren'Py, and Unity.",
-    images: [
-        "https://files.catbox.moe/pt3i41.webp",
-        "https://files.catbox.moe/2j2sdf.webp",
-        "https://files.catbox.moe/pt3i41.webp"
-    ],
-    downloadLink: "https://vexfile.com/download/0nBIjKZ5HL",
-    downloadKey: "JOIPLAY-1.20.023-APK",
-    keyDescription: "Get the key from our Discord server!",
-    gamePassword: "JOIPLAY-1.20.023-APK",
-    passwordWaitTime: 45,
-    youtubeUrl: ""
-},
+            {
+                id: 2,
+                name: "Joiplay",
+                publisher: "Joiplay Team",
+                version: "1.20.023",
+                size: 23.45,
+                sizeUnit: "MB",
+                language: "English",
+                description: "JoiPlay is an open-source emulator application for the Android operating system, allowing users to play PC games, especially those developed using RPG Maker, Ren'Py, and Unity.",
+                images: [
+                    "https://files.catbox.moe/xbjol8.png",
+                    "https://files.catbox.moe/2j2sdf.webp",
+                    "https://files.catbox.moe/pt3i41.webp"
+                ],
+                downloadLink: "https://vexfile.com/download/0nBIjKZ5HL",
+                youtubeUrl: ""
+            },
             {
                 id: 1,
                 name: "He Maid her Fall",
@@ -1270,11 +1043,7 @@
                     "https://files.catbox.moe/n016u1.jpg",
                     "https://files.catbox.moe/tdx0n8.jpg"
                 ],
-                downloadLink: "https://vexfile.com/download/0qGyth1mlF",
-                downloadKey: "YUKI-2026-GAME",  // ⬅️ Key để download
-                keyDescription: "Click the "get password" button to get the code.",  // ⬅️ Mô tả cách lấy key
-                gamePassword: "YUKI-2026-GAME",  // ⬅️ Password của game (hiện sau khi verify key)
-                passwordWaitTime: 30  // ⬅️ Số giây đợi trước khi hiện nút Get Password (để trống = 5s mặc định)
+                downloadLink: "https://vexfile.com/download/0qGyth1mlF"
             }
         ];
 
@@ -1387,7 +1156,7 @@
             btn.textContent = '⬇️ Download APK Now';
             btn.disabled = false;
             btn.dataset.link = game.downloadLink;
-            btn.onclick = checkKeyBeforeDownload;  // ⬅️ Check key first!
+            btn.onclick = startDownload;
             document.getElementById('downloadProgressBar').style.width = '0%';
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1436,28 +1205,11 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function checkKeyBeforeDownload() {
-            // Get current game ID from detail page
-            const gameId = window.currentDetailGameId;
-            const game = games.find(g => g.id === gameId);
-            
-            if (!game) return;
-
-            // Check if game requires key
-            if (game.downloadKey && game.downloadKey !== '') {
-                // Show key modal
-                showKeyModal(gameId);
-            } else {
-                // No key required, start download directly
-                startDownload();
-            }
-        }
-
         function startDownload() {
             const btn = document.getElementById('downloadBtn');
             const link = btn.dataset.link;
 
-            // Just open the download link directly (key already verified)
+            // Just open the download link directly
             window.open(link, '_blank');
             
             // Reset button text
@@ -1486,132 +1238,6 @@
 
         // ===============================================
         // ===============================================
-        // DOWNLOAD KEY MODAL
-        // ===============================================
-        let currentGameForDownload = null;
-
-        function showKeyModal(gameId) {
-            currentGameForDownload = games.find(g => g.id === gameId);
-            if (!currentGameForDownload) return;
-
-            // Update modal with custom description
-            if (currentGameForDownload.keyDescription) {
-                document.getElementById('keyHint').innerHTML = `💡 ${currentGameForDownload.keyDescription}`;
-            } else {
-                document.getElementById('keyHint').innerHTML = '💡 Hint: Check the game description or contact support for the key';
-            }
-
-            // Show key modal
-            document.getElementById('keyModal').classList.add('active');
-            document.getElementById('keyInput').value = '';
-            document.getElementById('keyError').classList.remove('show');
-            document.getElementById('keyInput').focus();
-        }
-
-        function closeKeyModal() {
-            document.getElementById('keyModal').classList.remove('active');
-            
-            // Reset modal states
-            document.getElementById('keyInput').value = '';
-            document.getElementById('keyError').classList.remove('show');
-            
-            // Reset password sections
-            document.getElementById('passwordWaitingSection').style.display = 'none';
-            document.getElementById('passwordDisplayBox').style.display = 'none';
-            document.getElementById('passwordValueText').textContent = '';
-            
-            currentGameForDownload = null;
-        }
-
-        function verifyDownloadKey() {
-            if (!currentGameForDownload) return;
-
-            const inputKey = document.getElementById('keyInput').value.trim().toUpperCase();
-            const correctKey = currentGameForDownload.downloadKey.toUpperCase();
-
-            if (inputKey === correctKey) {
-                // Key is correct
-                document.getElementById('keyError').classList.remove('show');
-                
-                // Close modal and download
-                closeKeyModal();
-                startDownload();
-                
-            } else {
-                // Key is incorrect
-                document.getElementById('keyError').classList.add('show');
-                document.getElementById('keyInput').value = '';
-                document.getElementById('keyInput').focus();
-            }
-        }
-
-        function getPasswordAction() {
-            if (!currentGameForDownload || !currentGameForDownload.gamePassword) {
-                alert('No password available for this game.');
-                return;
-            }
-
-            // Show waiting section
-            document.getElementById('passwordWaitingSection').style.display = 'block';
-            
-            // Get wait time (default 5 seconds)
-            const waitTime = currentGameForDownload.passwordWaitTime || 5;
-            let counter = waitTime;
-            
-            document.getElementById('passwordWaitCounter').textContent = counter;
-            
-            // Countdown
-            const interval = setInterval(() => {
-                counter--;
-                if (counter > 0) {
-                    document.getElementById('passwordWaitCounter').textContent = counter;
-                } else {
-                    clearInterval(interval);
-                    // Hide waiting, show password
-                    document.getElementById('passwordWaitingSection').style.display = 'none';
-                    document.getElementById('passwordValueText').textContent = currentGameForDownload.gamePassword;
-                    document.getElementById('passwordDisplayBox').style.display = 'block';
-                }
-            }, 1000);
-        }
-
-        function copyPasswordText() {
-            const password = document.getElementById('passwordValueText').textContent;
-            const keyInput = document.getElementById('keyInput');
-            
-            navigator.clipboard.writeText(password).then(() => {
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = '✅ Copied!';
-                
-                // Auto paste into key input field
-                keyInput.value = password;
-                keyInput.focus();
-                
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                }, 2000);
-            });
-        }
-
-        function actuallyStartDownload() {
-            // This is the original startDownload logic
-            startDownload();
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('keyModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeKeyModal();
-            }
-        });
-
-        // Press Enter to verify
-        document.getElementById('keyInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                verifyKey();
-            }
-        });
 
         // ===============================================
         // ANTI-COPY PROTECTION
@@ -1708,4 +1334,4 @@
         displayGames();
     </script>
 </body>
-    </html>
+</html>
