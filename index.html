@@ -1011,54 +1011,59 @@
         // ===============================================
         // GAMES DATA
         // ===============================================
-        let games = [
-             {
-    id: 1,
-    name: "Master, from now on I shall take my Revenge",
-    publisher: "Studio Neko Kick",
-    version: "1.0.4",
-    size: 555,
-    sizeUnit: "MB",
-    language: "English",
-    description: "To play, you need to download Joiplay, which you can find here.",
-    images: ["https://files.catbox.moe/j1ovo7.jpg", "https://files.catbox.moe/5o213c.webp", "https://files.catbox.moe/u4tsnj.webp"],
-    downloadLink: "https://vexfile.com/download/LdVyP2Lkhc",
-    youtubeUrl: ""  // Optional
-},
-            {
-                id: 2,
-                name: "Joiplay",
-                publisher: "Joiplay Team",
-                version: "1.20.023",
-                size: 23.45,
-                sizeUnit: "MB",
-                language: "English",
-                description: "JoiPlay is an open-source emulator application for the Android operating system, allowing users to play PC games, especially those developed using RPG Maker, Ren'Py, and Unity.",
-                images: [
-                    "https://files.catbox.moe/xbjol8.png",
-                    "https://files.catbox.moe/2j2sdf.webp",
-                    "https://files.catbox.moe/pt3i41.webp"
-                ],
-                downloadLink: "https://vexfile.com/download/0nBIjKZ5HL",
-                youtubeUrl: ""
-            }
-            {
-                id: 3,
-                name: "He Maid her Fall",
-                publisher: "Hangover Cat",
-                version: "0.7.6",
-                size: 4,
-                sizeUnit: "GB",
-                language: "English",
-                description: "Experience an immersive adventure with stunning visuals and engaging gameplay.",
-                images: [
-                    "https://files.catbox.moe/12lg71.gif",
-                    "https://files.catbox.moe/n016u1.jpg",
-                    "https://files.catbox.moe/tdx0n8.jpg"
-                ],
-                downloadLink: "https://vexfile.com/download/0qGyth1mlF"
-            }
-        ];
+        
+        ];let games = [
+    {
+        id: 3,
+        name: "Master, from now on I shall take my Revenge",
+        publisher: "Studio Neko Kick",
+        version: "1.0.4",
+        size: 555,
+        sizeUnit: "MB",
+        language: "English",
+        description: "To play, you need to download Joiplay, which you can find here.",
+        images: [
+            "https://files.catbox.moe/j1ovo7.jpg",
+            "https://files.catbox.moe/5o213c.webp",
+            "https://files.catbox.moe/u4tsnj.webp"
+        ],
+        downloadLink: "https://vexfile.com/download/LdVyP2Lkhc",
+        youtubeUrl: ""
+    },
+    {
+        id: 2,
+        name: "Joiplay",
+        publisher: "Joiplay Team",
+        version: "1.20.023",
+        size: 23.45,
+        sizeUnit: "MB",
+        language: "English",
+        description: "JoiPlay is an open-source emulator application for the Android operating system, allowing users to play PC games, especially those developed using RPG Maker, Ren'Py, and Unity.",
+        images: [
+            "https://files.catbox.moe/pt3i41.webp",
+            "https://files.catbox.moe/2j2sdf.webp",
+            "https://files.catbox.moe/pt3i41.webp"
+        ],
+        downloadLink: "https://vexfile.com/download/0nBIjKZ5HL",
+        youtubeUrl: ""
+    },
+    {
+        id: 1,
+        name: "He Maid her Fall",
+        publisher: "Hangover Cat",
+        version: "0.7.6",
+        size: 4,
+        sizeUnit: "GB",
+        language: "English",
+        description: "Experience an immersive adventure with stunning visuals and engaging gameplay.",
+        images: [
+            "https://files.catbox.moe/12lg71.gif",
+            "https://files.catbox.moe/n016u1.jpg",
+            "https://files.catbox.moe/tdx0n8.jpg"
+        ],
+        downloadLink: "https://vexfile.com/download/0qGyth1mlF"
+    }
+];
 
         function displayGames(gamesToShow = games) {
             const grid = document.getElementById('gamesGrid');
@@ -1348,4 +1353,5 @@
     </script>
 </body>
     </html>
+
 
