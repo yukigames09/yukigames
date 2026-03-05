@@ -17,12 +17,10 @@
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            padding: 40px 20px;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* Animated Background Blobs */
@@ -74,6 +72,7 @@
             z-index: 1;
             max-width: 680px;
             width: 100%;
+            margin: 0 auto;
         }
 
         /* Profile Card */
@@ -338,6 +337,10 @@
 
         /* Responsive */
         @media (max-width: 480px) {
+            body {
+                padding: 20px;
+            }
+
             .profile-card {
                 padding: 40px 25px;
             }
@@ -429,46 +432,35 @@
 
             <!-- Bio -->
             <p class="bio">
-                Welcome to Yuki Games <br>
-                
+                Welcome to Yuki Games
             </p>
 
             <!-- Main Links -->
-            <a href="https://discord.gg/4RjndQsu" class="link-btn" target="_blank">
-    <span class="link-icon">💬</span>
-    Chat with me on Discord (not a group)
-</a>
-              <a href="https://x.com/yukigames819" class="link-btn" target="_blank">
-    <span class="link-icon">🖤</span>
-    Follow channel X to receive notifications from me.
-</a>
-               <a href="https://www.youtube.com/@DHGame18" class="link-btn" target="_blank">
-    <span class="link-icon">❤️</span>
-    Subscribe to the YouTube channel 
-</a> 
-                  <a href="yukigames940@gmail.com" class="link-btn" target="_blank">
-    <span class="link-icon">💌</span>
-    Email
-</a>
+            <div class="links-container">
+                <a href="https://discord.gg/4RjndQsu" class="link-btn" target="_blank">
+                    <span class="link-icon">💬</span>
+                    Chat with me on Discord (not a group)
+                </a>
+
+                <a href="https://x.com/yukigames819" class="link-btn" target="_blank">
+                    <span class="link-icon">🖤</span>
+                    Follow channel X to receive notifications from me.
+                </a>
+
+                <a href="https://www.youtube.com/@DHGame18" class="link-btn" target="_blank">
+                    <span class="link-icon">❤️</span>
+                    Subscribe to the YouTube channel
+                </a>
+
+                <a href="mailto:yukigames940@gmail.com" class="link-btn">
+                    <span class="link-icon">💌</span>
+                    Email
+                </a>
             </div>
 
             <!-- Social Media Icons -->
             <div class="social-icons">
-                <a href="https://twitter.com/yourhandle" class="social-icon" target="_blank" title="Twitter">
-                    𝕏
-                </a>
-                <a href="https://instagram.com/yourhandle" class="social-icon" target="_blank" title="Instagram">
-                    📷
-                </a>
-                <a href="https://facebook.com/yourpage" class="social-icon" target="_blank" title="Facebook">
-                    📘
-                </a>
-                <a href="https://tiktok.com/@yourhandle" class="social-icon" target="_blank" title="TikTok">
-                    🎵
-                </a>
-                <a href="mailto:your@email.com" class="social-icon" target="_blank" title="Email">
-                    ✉️
-                </a>
+                
             </div>
 
             <!-- Footer -->
