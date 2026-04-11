@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yuki Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--surface:#12121a;--surface2:#1c1c28;--surface3:#22223a;
+  --border:rgba(255,255,255,0.07);--accent:#7c6aff;--accent2:#ff6b6b;--green:#3ecf8e;
+  --text:#f0eeff;--muted:rgba(240,238,255,0.45);
+}
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;user-select:none;-webkit-user-select:none}
+body::before{content:'';position:fixed;top:-200px;left:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(124,106,255,0.16) 0%,transparent 70%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(62,207,142,0.09) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+/* ─── PAGE SYSTEM ─── */
+.page{display:none;position:relative;z-index:1}
+.page.active{display:block}
+
+/* ─── SHARED ─── */
+.logo{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-0.03em;cursor:pointer}
+.logo span{color:var(--accent)}
+.badge{font-size:11px;font-weight:500;background:rgba(124,106,255,0.15);border:1px solid rgba(124,106,255,0.3);color:#a89aff;padding:4px 12px;border-radius:20px;letter-spacing:0.05em;text-transform:uppercase}
+.badge-green{font-size:11px;font-weight:500;background:rgba(62,207,142,0.12);border:1px solid rgba(62,207,142,0.25);color:#3ecf8e;padding:4px 12px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#1e1e2e;border:1px solid rgba(124,106,255,.3);color:var(--text);padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;opacity:0;transform:translateY(10px);transition:all .3s ease;z-index:99999;pointer-events:none;max-width:300px}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ═══════════════════════════════════════
+   PAGE 1 — LOCK SCREEN
+═══════════════════════════════════════ */
+#page-lock{min-height:100vh;display:none;align-items:center;justify-content:center;padding:1.5rem}
+#page-lock.active{display:flex}
+.lock-box{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid rgba(124,106,255,0.2);border-radius:24px;padding:2.8rem 2.6rem 2.4rem;width:100%;max-width:380px;box-shadow:0 0 80px rgba(124,106,255,0.1)}
+.lock-icon{width:64px;height:64px;background:rgba(124,106,255,0.12);border:1px solid rgba(124,106,255,0.25);border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:1.4rem}
+.lock-icon svg{width:28px;height:28px;color:#a89aff}
+.lock-logo{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:.4rem}
+.lock-logo span{color:var(--accent)}
+.lock-sub{font-size:13px;color:var(--muted);margin-bottom:1.8rem;text-align:center;line-height:1.6}
+.key-label{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;align-self:flex-start;margin-bottom:.5rem}
+.key-wrap{position:relative;width:100%}
+.key-input{width:100%;padding:13px 48px 13px 16px;background:var(--surface2);border:1px solid rgba(124,106,255,0.2);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;letter-spacing:.12em;outline:none;transition:border-color .2s}
+.key-input:focus{border-color:rgba(124,106,255,0.6)}
+.key-input.error{border-color:rgba(255,107,107,0.7);animation:shake .35s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);display:flex;align-items:center;padding:0;transition:color .2s}
+.eye-btn:hover{color:var(--text)}
+.eye-btn svg{width:18px;height:18px}
+.error-msg{font-size:12px;color:var(--accent2);margin-top:.6rem;height:16px;text-align:center}
+.enter-btn{width:100%;margin-top:1rem;padding:13px;background:var(--accent);border:none;border-radius:10px;color:white;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:.02em;transition:all .2s}
+.enter-btn:hover{background:#9b8dff;box-shadow:0 6px 24px rgba(124,106,255,0.45)}
+.enter-btn:active{transform:scale(.98)}
+.enter-btn:disabled{opacity:.5;cursor:not-allowed}
+.getkey-btn{width:100%;margin-top:.7rem;padding:12px;background:transparent;border:1px dashed rgba(124,106,255,0.35);border-radius:10px;color:#a89aff;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.getkey-btn:hover{background:rgba(124,106,255,0.08);border-color:rgba(124,106,255,0.6);color:var(--text)}
+.getkey-btn svg{width:15px;height:15px}
+
+/* ═══════════════════════════════════════
+   PAGE 2 — KEYGEN
+═══════════════════════════════════════ */
+#page-keygen{min-height:100vh;padding:2rem 1rem;display:none;flex-direction:column;align-items:center;justify-content:center}
+#page-keygen.active{display:flex}
+.keygen-wrapper{width:100%;max-width:520px;display:flex;flex-direction:column;gap:1.3rem}
+.kg-top{display:flex;align-items:center;justify-content:space-between}
+.kg-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2rem}
+.kg-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.4rem}
+.kg-sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1.6rem}
+.key-display-wrap{position:relative;margin-bottom:1.1rem}
+.key-display{width:100%;padding:1rem 50px 1rem 1.2rem;background:var(--surface2);border:1px solid rgba(124,106,255,0.2);border-radius:12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:600;letter-spacing:.07em;text-align:center;outline:none;cursor:default;transition:border-color .2s,background .2s}
+.key-display.generated{border-color:rgba(62,207,142,0.4);background:rgba(62,207,142,0.05)}
+.key-display.empty{color:var(--muted);font-size:.85rem;font-family:'DM Sans',sans-serif;letter-spacing:0}
+.copy-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);display:flex;align-items:center;padding:4px;border-radius:6px;transition:color .2s,background .2s}
+.copy-btn:hover{color:var(--text);background:var(--surface3)}
+.copy-btn svg{width:17px;height:17px}
+.expiry-row{display:flex;align-items:center;gap:.5rem;margin-bottom:1.3rem;font-size:13px;color:var(--muted)}
+.expiry-row svg{width:14px;height:14px;flex-shrink:0;color:var(--green)}
+.expiry-row strong{color:var(--green);font-weight:500}
+.gen-btn{width:100%;padding:14px;border:none;border-radius:12px;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;background:linear-gradient(135deg,#7c6aff,#9b8dff);color:white}
+.gen-btn:hover{box-shadow:0 8px 30px rgba(124,106,255,.45);transform:translateY(-1px)}
+.gen-btn:active{transform:scale(.98)}
+.gen-btn.loading{opacity:.7;cursor:not-allowed;pointer-events:none}
+.gen-btn svg{width:18px;height:18px;flex-shrink:0}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.history-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.6rem}
+.history-title{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem}
+.history-list{display:flex;flex-direction:column;gap:.6rem;max-height:220px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(124,106,255,.2) transparent}
+.history-item{display:flex;align-items:center;gap:.8rem;padding:.7rem 1rem;background:var(--surface2);border-radius:10px;border:1px solid var(--border)}
+.history-key{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:600;letter-spacing:.05em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.history-time{font-size:11px;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.history-status{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;flex-shrink:0;white-space:nowrap}
+.status-active{background:rgba(62,207,142,.12);color:#3ecf8e;border:1px solid rgba(62,207,142,.2)}
+.status-used{background:rgba(124,106,255,.12);color:#a89aff;border:1px solid rgba(124,106,255,.2)}
+.status-expired{background:rgba(255,107,107,.1);color:#ff6b6b;border:1px solid rgba(255,107,107,.2)}
+.h-copy{background:none;border:none;cursor:pointer;color:var(--muted);padding:2px;display:flex;align-items:center;transition:color .2s;flex-shrink:0}
+.h-copy:hover{color:var(--accent)}
+.h-copy svg{width:14px;height:14px}
+.h-fill{background:none;border:none;cursor:pointer;color:var(--muted);padding:2px;display:flex;align-items:center;transition:color .2s;flex-shrink:0}
+.h-fill:hover{color:var(--green)}
+.h-fill svg{width:14px;height:14px}
+.no-history{font-size:13px;color:var(--muted);text-align:center;padding:.5rem 0}
+.back-link{display:flex;align-items:center;justify-content:center;gap:.5rem;font-size:13px;color:var(--muted);padding:.8rem;border-radius:10px;border:1px dashed var(--border);transition:all .2s;cursor:pointer;background:none;width:100%}
+.back-link:hover{color:var(--text);border-color:rgba(124,106,255,.3);background:rgba(124,106,255,.05)}
+.back-link svg{width:14px;height:14px}
+
+/* ═══════════════════════════════════════
+   PAGE 3 — MAIN APP
+═══════════════════════════════════════ */
+#page-app{display:none}
+#page-app.active{display:block}
+.app{max-width:1200px;margin:0 auto;padding:0 1.5rem 4rem}
+header{padding:2.5rem 0 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header-right{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.session-timer{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;background:var(--surface2);border:1px solid var(--border);padding:7px 14px;border-radius:8px;color:var(--muted);font-variant-numeric:tabular-nums}
+.session-timer svg{width:14px;height:14px;flex-shrink:0}
+.session-timer.warn{color:#ffb347;border-color:rgba(255,179,71,.3);background:rgba(255,179,71,.06)}
+.session-timer.danger{color:var(--accent2);border-color:rgba(255,107,107,.35);background:rgba(255,107,107,.08)}
+.lock-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .2s}
+.lock-btn:hover{color:var(--accent2);border-color:rgba(255,107,107,.3)}
+.lock-btn svg{width:14px;height:14px}
+.section-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1.4rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:rgba(124,106,255,.3)}
+.video-thumb{aspect-ratio:16/9;background:var(--surface2);overflow:hidden;position:relative;cursor:pointer}
+.video-thumb video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);opacity:0;transition:opacity .2s}
+.video-thumb:hover .thumb-overlay{opacity:1}
+.play-circle{width:52px;height:52px;border-radius:50%;background:rgba(124,106,255,.85);display:flex;align-items:center;justify-content:center}
+.play-circle svg{width:22px;height:22px;color:white;margin-left:3px}
+.card-body{padding:.9rem 1rem}
+.card-title{font-family:'Syne',sans-serif;font-size:.93rem;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-meta{font-size:12px;color:var(--muted);margin-bottom:.8rem}
+.btn-row{display:flex;gap:8px}
+.dl-btn{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;padding:7px 16px;border-radius:8px;border:none;cursor:pointer;background:var(--accent);color:white;transition:all .2s;user-select:none;flex:1;justify-content:center}
+.dl-btn svg{width:14px;height:14px;flex-shrink:0}
+.dl-btn:hover{background:#9b8dff;box-shadow:0 4px 16px rgba(124,106,255,.4)}
+.fs-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:var(--surface2);color:var(--text);transition:all .2s;user-select:none;white-space:nowrap}
+.fs-btn svg{width:14px;height:14px;flex-shrink:0}
+.fs-btn:hover{border-color:rgba(124,106,255,.4);color:var(--accent)}
+
+/* ─── FULLSCREEN PLAYER ─── */
+#fs-player{display:none;position:fixed;inset:0;z-index:8000;background:#000;flex-direction:column}
+#fs-player.open{display:flex}
+#fs-player video{flex:1;width:100%;height:100%;object-fit:contain;display:block;outline:none}
+.fs-topbar{position:absolute;top:0;left:0;right:0;padding:1rem 1.4rem;background:linear-gradient(rgba(0,0,0,.8),transparent);display:flex;align-items:center;justify-content:space-between;z-index:1;transition:opacity .3s}
+.fs-topbar.hidden{opacity:0;pointer-events:none}
+.fs-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:white}
+.fs-meta{font-size:12px;color:rgba(255,255,255,.55);margin-top:2px}
+.fs-close{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;transition:background .2s}
+.fs-close:hover{background:rgba(255,255,255,.25)}
+.fs-close svg{width:18px;height:18px}
+.fs-bottombar{position:absolute;bottom:0;left:0;right:0;padding:1.2rem 1.4rem;background:linear-gradient(transparent,rgba(0,0,0,.85));display:flex;align-items:center;gap:1rem;z-index:1;transition:opacity .3s}
+.fs-bottombar.hidden{opacity:0;pointer-events:none}
+.fs-dl-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;background:rgba(124,106,255,.85);color:white;transition:all .2s}
+.fs-dl-btn:hover{background:var(--accent)}
+.fs-dl-btn svg{width:14px;height:14px}
+
+/* ─── EXPIRED ─── */
+#expired-overlay{display:none;position:fixed;inset:0;z-index:8500;background:rgba(0,0,0,.88);align-items:center;justify-content:center}
+#expired-overlay.show{display:flex}
+.expired-box{background:var(--surface);border:1px solid rgba(255,107,107,.3);border-radius:24px;padding:2.6rem 2.4rem;max-width:360px;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem}
+.expired-icon{width:60px;height:60px;background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.25);border-radius:18px;display:flex;align-items:center;justify-content:center}
+.expired-icon svg{width:26px;height:26px;color:#ff6b6b}
+.expired-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:-.02em}
+.expired-sub{font-size:13px;color:var(--muted);line-height:1.7}
+.expired-btn{width:100%;padding:12px;background:var(--accent);border:none;border-radius:10px;color:white;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:background .2s}
+.expired-btn:hover{background:#9b8dff}
+
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr}
+  .lock-box{padding:2rem 1.4rem 1.8rem;margin:.5rem}
+  .btn-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ PAGE: LOCK ═══ -->
+<div id="page-lock" class="page active">
+  <div class="lock-box">
+    <div class="lock-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="lock-logo">Yuki <span>Media</span></div>
+    <div class="lock-sub">Enter your access key to continue</div>
+    <div class="key-label">Access Key</div>
+    <div class="key-wrap">
+      <input class="key-input" id="key-input" type="password" placeholder="••••••••" autocomplete="off" maxlength="64" onkeydown="if(event.key==='Enter')tryUnlock()">
+      <button class="eye-btn" onclick="toggleEye()">
+        <svg id="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6s4-6 11-6 11 6 11 6-4 6-11 6-11-6-11-6z"/><circle cx="12" cy="6" r="3"/></svg>
+        <svg id="eye-hide" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </button>
+    </div>
+    <div class="error-msg" id="err-msg"></div>
+    <button class="enter-btn" id="enter-btn" onclick="tryUnlock()">Enter</button>
+    <button class="getkey-btn" onclick="showPage('keygen')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      Get a Key
+    </button>
+  </div>
+</div>
+
+<!-- ═══ PAGE: KEYGEN ═══ -->
+<div id="page-keygen" class="page">
+  <div class="keygen-wrapper">
+    <div class="kg-top">
+      <div class="logo" onclick="showPage('lock')">Yuki <span>Media</span></div>
+      <div class="badge-green">Key Generator</div>
+    </div>
+
+    <div class="kg-card">
+      <div class="kg-title">Get Access Key</div>
+      <div class="kg-sub">Generate a random key to access Yuki Media. Each key is valid for <strong style="color:var(--text)">4 hours</strong> from the moment it is first used.</div>
+      <div class="key-display-wrap">
+        <input class="key-display empty" id="key-display" readonly value="Click Generate to get your key">
+        <button class="copy-btn" onclick="copyGeneratedKey()" title="Copy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+      </div>
+      <div class="expiry-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Valid for <strong>4 hours</strong> from first use · Saved in this browser
+      </div>
+      <button class="gen-btn" id="gen-btn" onclick="generateKey()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Generate Key
+      </button>
+    </div>
+
+    <div class="history-card">
+      <div class="history-title">Key History</div>
+      <div class="history-list" id="history-list"><div class="no-history">No keys generated yet</div></div>
+    </div>
+
+    <button class="back-link" onclick="showPage('lock')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Login
+    </button>
+  </div>
+</div>
+
+<!-- ═══ PAGE: APP ═══ -->
+<div id="page-app" class="page">
+  <div class="app">
+    <header>
+      <div class="logo">Yuki <span>Media</span></div>
+      <div class="header-right">
+        <div class="session-timer" id="session-timer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="timer-display">4:00:00</span>
+        </div>
+        <div class="badge">Media Hub</div>
+        <button class="lock-btn" onclick="manualLock()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Lock
+        </button>
+      </div>
+    </header>
+    <div class="section-title">Featured Videos</div>
+    <div class="grid" id="video-grid"></div>
+  </div>
+</div>
+
+<!-- ═══ FULLSCREEN PLAYER ═══ -->
+<div id="fs-player">
+  <div class="fs-topbar" id="fs-topbar">
+    <div>
+      <div class="fs-title" id="fs-title"></div>
+      <div class="fs-meta" id="fs-meta"></div>
+    </div>
+    <button class="fs-close" onclick="closeFsPlayer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <video id="fs-video" controls preload="metadata"></video>
+  <div class="fs-bottombar" id="fs-bottombar">
+    <button class="fs-dl-btn" id="fs-dl-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download
+    </button>
+  </div>
+</div>
+
+<!-- ═══ EXPIRED OVERLAY ═══ -->
+<div id="expired-overlay">
+  <div class="expired-box">
+    <div class="expired-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div class="expired-title">Session Expired</div>
+    <div class="expired-sub">Your 4-hour session has ended.<br>Get a new key or re-enter to continue.</div>
+    <button class="expired-btn" onclick="showPage('lock');document.getElementById('expired-overlay').classList.remove('show')">Re-enter Key</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════
+// CONFIG — chỉnh tại đây
+// ════════════════════════════════════════════
+const SESSION_HOURS  = 4;
+const SESSION_MS     = SESSION_HOURS * 60 * 60 * 1000;
+const LS_SESSION     = 'yuki_session_end';
+const LS_KEYS_STORE  = 'yuki_keys_store';
+const FALLBACK_KEY   = 'yuki2024'; // key dự phòng cố định
+
+// ════════════════════════════════════════════
+// VIDEOS — thêm video vào đây
+// ════════════════════════════════════════════
+const videos = [
+  { title:'Big Buck Bunny',          meta:'5 min · MP4 · 1080p',  url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',                filename:'BigBuckBunny.mp4' },
+  { title:'Elephant Dream',          meta:'11 min · MP4 · 720p',  url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',               filename:'ElephantsDream.mp4' },
+  { title:'For Bigger Blazes',       meta:'0:15 · MP4 · 1080p',   url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',             filename:'ForBiggerBlazes.mp4' },
+  { title:'Subaru Outback',          meta:'0:30 · MP4 · 720p',    url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',filename:'SubaruOutback.mp4' },
+  { title:'Tears of Steel',          meta:'12 min · MP4 · 1080p', url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',                filename:'TearsOfSteel.mp4' },
+  { title:'We Are Going On Bullrun', meta:'0:33 · MP4 · 720p',    url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4',        filename:'WeAreGoingOnBullrun.mp4' },
+];
+
+// ════════════════════════════════════════════
+// ROUTING — chuyển trang nội bộ
+// ════════════════════════════════════════════
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById('page-'+name);
+  el.classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='keygen') renderHistory();
+}
+
+// ════════════════════════════════════════════
+// SESSION
+// ════════════════════════════════════════════
+function saveSession(ts){ try{localStorage.setItem(LS_SESSION,String(ts))}catch(e){} }
+function loadSession(){ try{return parseInt(localStorage.getItem(LS_SESSION)||'0',10)}catch(e){return 0} }
+function clearSession(){ try{localStorage.removeItem(LS_SESSION)}catch(e){} }
+
+let tickInterval=null, sessionEnd=0, attempts=0;
+
+// Auto-restore
+(function initCheck(){
+  const saved=loadSession();
+  if(saved && saved>Date.now()){
+    sessionEnd=saved;
+    showPage('app');
+    startTick();
+    showToast('Welcome back! '+Math.ceil((saved-Date.now())/60000)+' min remaining');
+  }
+})();
+
+// ════════════════════════════════════════════
+// KEY VALIDATION
+// ════════════════════════════════════════════
+function isValidKey(val){
+  if(val===FALLBACK_KEY) return true;
+  try{
+    const store=JSON.parse(localStorage.getItem(LS_KEYS_STORE)||'[]');
+    return store.some(k=>k.key===val);
+  }catch(e){return false;}
+}
+function markKeyUsed(val){
+  try{
+    const store=JSON.parse(localStorage.getItem(LS_KEYS_STORE)||'[]');
+    const i=store.findIndex(k=>k.key===val);
+    if(i>=0){store[i].used=true;store[i].usedAt=Date.now();}
+    localStorage.setItem(LS_KEYS_STORE,JSON.stringify(store));
+  }catch(e){}
+}
+
+// ════════════════════════════════════════════
+// LOCK
+// ════════════════════════════════════════════
+function tryUnlock(){
+  const inp=document.getElementById('key-input');
+  const err=document.getElementById('err-msg');
+  const val=inp.value.trim();
+  if(isValidKey(val)){
+    err.textContent='';
+    sessionEnd=Date.now()+SESSION_MS;
+    saveSession(sessionEnd);
+    markKeyUsed(val);
+    inp.value='';
+    showPage('app');
+    startTick();
+  } else {
+    attempts++;
+    inp.classList.add('error');
+    setTimeout(()=>inp.classList.remove('error'),400);
+    if(attempts>=3){
+      err.textContent='Too many attempts. Wait 5 seconds.';
+      inp.disabled=true;
+      document.getElementById('enter-btn').disabled=true;
+      setTimeout(()=>{
+        inp.disabled=false;
+        document.getElementById('enter-btn').disabled=false;
+        attempts=0; err.textContent='';
+      },5000);
+    } else {
+      err.textContent='Incorrect key. Please try again.';
+    }
+    inp.value='';
+  }
+}
+function toggleEye(){
+  const inp=document.getElementById('key-input');
+  const s=document.getElementById('eye-show');
+  const h=document.getElementById('eye-hide');
+  if(inp.type==='password'){inp.type='text';s.style.display='none';h.style.display='';}
+  else{inp.type='password';s.style.display='';h.style.display='none';}
+}
+
+// ════════════════════════════════════════════
+// TIMER
+// ════════════════════════════════════════════
+function startTick(){
+  clearInterval(tickInterval);
+  tickTick();
+  tickInterval=setInterval(tickTick,1000);
+}
+function tickTick(){
+  const r=sessionEnd-Date.now();
+  if(r<=0){clearInterval(tickInterval);clearSession();closeFsPlayer();document.getElementById('expired-overlay').classList.add('show');return;}
+  const h=Math.floor(r/3600000),m=Math.floor((r%3600000)/60000),s=Math.floor((r%60000)/1000);
+  document.getElementById('timer-display').textContent=h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  const el=document.getElementById('session-timer');
+  el.classList.remove('warn','danger');
+  if(r<5*60*1000) el.classList.add('danger');
+  else if(r<30*60*1000) el.classList.add('warn');
+}
+function manualLock(){
+  clearInterval(tickInterval);
+  clearSession();
+  closeFsPlayer();
+  document.getElementById('timer-display').textContent=SESSION_HOURS+':00:00';
+  document.getElementById('session-timer').classList.remove('warn','danger');
+  document.getElementById('key-input').value='';
+  document.getElementById('err-msg').textContent='';
+  attempts=0;
+  showPage('lock');
+}
+
+// ════════════════════════════════════════════
+// FULLSCREEN PLAYER
+// ════════════════════════════════════════════
+let hideBarTimer=null;
+function openFsPlayer(v){
+  const vid=document.getElementById('fs-video');
+  document.getElementById('fs-title').textContent=v.title;
+  document.getElementById('fs-meta').textContent=v.meta;
+  document.getElementById('fs-dl-btn').onclick=()=>downloadFile(v.url,v.filename);
+  vid.src=v.url; vid.play().catch(()=>{});
+  document.getElementById('fs-player').classList.add('open');
+  document.body.style.overflow='hidden';
+  setupFsHide();
+}
+function closeFsPlayer(){
+  const vid=document.getElementById('fs-video');
+  document.getElementById('fs-player').classList.remove('open');
+  vid.pause(); vid.src='';
+  document.body.style.overflow='';
+  clearTimeout(hideBarTimer);
+  showFsBars();
+}
+function setupFsHide(){
+  const p=document.getElementById('fs-player');
+  showFsBars();
+  p.onmousemove=p.ontouchstart=()=>{showFsBars();clearTimeout(hideBarTimer);hideBarTimer=setTimeout(hideFsBars,3000);};
+}
+function showFsBars(){document.getElementById('fs-topbar').classList.remove('hidden');document.getElementById('fs-bottombar').classList.remove('hidden');}
+function hideFsBars(){document.getElementById('fs-topbar').classList.add('hidden');document.getElementById('fs-bottombar').classList.add('hidden');}
+
+// ════════════════════════════════════════════
+// KEYGEN
+// ════════════════════════════════════════════
+function randomKey(){
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  const seg=()=>Array.from({length:5},()=>c[Math.floor(Math.random()*c.length)]).join('');
+  return seg()+'-'+seg()+'-'+seg();
+}
+function loadStore(){ try{return JSON.parse(localStorage.getItem(LS_KEYS_STORE)||'[]')}catch(e){return[]} }
+function saveStore(a){ try{localStorage.setItem(LS_KEYS_STORE,JSON.stringify(a))}catch(e){} }
+
+async function generateKey(){
+  const btn=document.getElementById('gen-btn');
+  btn.classList.add('loading');
+  btn.innerHTML='<div class="spinner"></div> Generating…';
+  await new Promise(r=>setTimeout(r,500+Math.random()*400));
+  const key=randomKey();
+  const store=loadStore();
+  store.unshift({key,created:Date.now(),used:false});
+  if(store.length>10) store.splice(10);
+  saveStore(store);
+  const disp=document.getElementById('key-display');
+  disp.value=key; disp.classList.remove('empty'); disp.classList.add('generated');
+  btn.classList.remove('loading');
+  btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Generate New Key`;
+  renderHistory();
+  showToast('Key generated! Use it in the login screen.');
+}
+
+function copyGeneratedKey(){
+  const d=document.getElementById('key-display');
+  if(d.classList.contains('empty')) return;
+  copyText(d.value);
+}
+function copyText(txt){
+  navigator.clipboard.writeText(txt).then(()=>showToast('Copied to clipboard!')).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=txt; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('Copied!');
+  });
+}
+function fillKey(key){
+  showPage('lock');
+  const inp=document.getElementById('key-input');
+  inp.value=key; inp.type='text';
+  document.getElementById('eye-show').style.display='none';
+  document.getElementById('eye-hide').style.display='';
+  showToast('Key filled in — press Enter to login');
+}
+function renderHistory(){
+  const store=loadStore();
+  const list=document.getElementById('history-list');
+  if(!store.length){list.innerHTML='<div class="no-history">No keys generated yet</div>';return;}
+  list.innerHTML=store.map(item=>{
+    const ago=timeSince(item.created);
+    let badge;
+    if(!item.used) badge='<span class="history-status status-active">Unused</span>';
+    else if(item.usedAt && Date.now()-item.usedAt<SESSION_MS) badge='<span class="history-status status-used">Active</span>';
+    else badge='<span class="history-status status-expired">Expired</span>';
+    return `<div class="history-item">
+      <div class="history-key">${item.key}</div>
+      <div class="history-time">${ago}</div>
+      ${badge}
+      <button class="h-fill" onclick="fillKey('${item.key}')" title="Fill in login">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      </button>
+      <button class="h-copy" onclick="copyText('${item.key}')" title="Copy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      </button>
+    </div>`;
+  }).join('');
+}
+function timeSince(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60) return 'just now';
+  if(s<3600) return Math.floor(s/60)+'m ago';
+  if(s<86400) return Math.floor(s/3600)+'h ago';
+  return Math.floor(s/86400)+'d ago';
+}
+
+// ════════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+function downloadFile(url,filename){
+  fetch(url).then(r=>r.blob()).then(blob=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=filename; a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('Downloading: '+filename);
+  }).catch(()=>{const a=document.createElement('a');a.href=url;a.download=filename;a.target='_blank';a.click();});
+}
+
+// ════════════════════════════════════════════
+// RENDER VIDEOS
+// ════════════════════════════════════════════
+const vg=document.getElementById('video-grid');
+videos.forEach(v=>{
+  const esc=JSON.stringify(v).replace(/"/g,'&quot;');
+  const d=document.createElement('div'); d.className='card';
+  d.innerHTML=`
+    <div class="video-thumb" onclick="openFsPlayer(${esc})">
+      <video src="${v.url}" preload="metadata" muted></video>
+      <div class="thumb-overlay"><div class="play-circle">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div></div>
+    </div>
+    <div class="card-body">
+      <div class="card-title">${v.title}</div>
+      <div class="card-meta">${v.meta}</div>
+      <div class="btn-row">
+        <button class="dl-btn" onclick="downloadFile('${v.url}','${v.filename}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </button>
+        <button class="fs-btn" onclick="openFsPlayer(${esc})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+          Fullscreen
+        </button>
+      </div>
+    </div>`;
+  vg.appendChild(d);
+});
+
+// ════════════════════════════════════════════
+// SECURITY
+// ════════════════════════════════════════════
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.getElementById('fs-player').classList.contains('open')) closeFsPlayer();
+  if((e.ctrlKey||e.metaKey)&&['u','s','a'].includes(e.key.toLowerCase())) e.preventDefault();
+  if(e.key==='F12') e.preventDefault();
+});
+setInterval(renderHistory,30000);
+</script>
+</body>
+</html>
